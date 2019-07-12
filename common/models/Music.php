@@ -16,9 +16,10 @@ class Music
         }
     }
 
-    public function getRandomGenre(): string
+    public function getRandomGenre(): array
     {
-        return array_rand($this->_genres, 1);
+        $key = array_rand($this->_genres, 1);
+        return [$key => $this->_genres[$key]];
     }
 
     public function getAllGenres(): array

@@ -16,9 +16,10 @@ class Drink
         }
     }
 
-    public function getRandomKind(): string
+    public function getRandomKind(): array
     {
-        return array_rand($this->_kinds, 1);
+        $key = array_rand($this->_kinds, 1);
+        return [$key => $this->_kinds[$key]];
     }
 
     public function getAllKinds(): array

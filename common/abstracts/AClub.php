@@ -5,7 +5,7 @@ use common\models\{Drink, Music};
 
 abstract class AClub
 {
-    const SONG_TIME = 120;
+    const SONG_TIME = 30;
 
     protected $genres = [], $kinds = [];
     protected $playGenre, $playTime, $id;

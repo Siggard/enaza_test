@@ -35,7 +35,13 @@ class NightClub extends AClub implements IClubCreate
 
     public function playRandomMusic(): void
     {
-        $this->playGenre = array_rand($this->genres, 1);
+        $genres = $this->genres;
+        if ($this->playGenre) {
+            unset($genres[$this->playGenre]);
+        }
+
+        $genres = array_keys($genres);
+        $this->playGenre = $genres[array_rand($genres, 1)];
         $this->playTime = strtotime('now');
     }
 }

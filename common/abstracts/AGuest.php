@@ -74,12 +74,17 @@ abstract class AGuest
         return $this->mood;
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public static function getStatusName(): array
     {
         return [
             self::STATUS_DANCE => 'let\'s dance',
             self::STATUS_DRUNK => 'go drunk',
-            self::STATUS_AWAY => 'i am tired'
+            self::STATUS_AWAY => 'i am go home'
         ];
     }
 
@@ -90,8 +95,8 @@ abstract class AGuest
         return [
             'status' => $this->getMood(),
             'national' => static::NATIONAL_CODE,
-            'genres' => implode(',', $this->getGenres()),
-            'kinds' => implode(',', $this->getKinds())
+            'genres' => implode(',', array_keys($this->getGenres())),
+            'kinds' => implode(',', array_keys($this->getKinds()))
         ];
     }
 }
