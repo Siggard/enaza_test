@@ -7,19 +7,21 @@ $params = array_merge(
 );
 
 return [
-    'id' => 'app-backend',
+    'id' => 'api',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
     'modules' => [],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-backend',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'enableSession' => false,
+            'identityClass' => 'common\models\data\User',
+            'enableAutoLogin' => false
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
@@ -37,14 +39,33 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'guest',
+                    'only' => ['options', 'view', 'index'],
+                    'except' => ['create', 'update', 'delete'],
+                    'pluralize' => false
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'club',
+                    'only' => ['options', 'view', 'index', 'optimize'],
+                    'except' => ['create', 'update', 'delete'],
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'PUT optimize' => 'optimize'
+                    ]
+                ]
             ],
         ],
-        */
+        'response' => [
+            'format' =>  \yii\web\Response::FORMAT_JSON
+        ]
     ],
     'params' => $params,
 ];

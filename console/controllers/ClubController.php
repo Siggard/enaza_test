@@ -1,9 +1,8 @@
 <?php
 namespace console\controllers;
 
-use common\models\data\{Guest, Club};
-use common\factorys\{
-    ClubFactory, GuestFactory
+use common\models\data\{
+    Guest, Club, User
 };
 use common\models\NightClub;
 use yii\console\Controller;
@@ -58,62 +57,18 @@ class ClubController extends Controller
 
             $this->stdout($guest->sayHello() . PHP_EOL);
         }
-    }
 
-    public function actionOptimize()
-    {
-        $container = new \yii\di\Container;
-
-        /**
-         * @var $music \common\models\Music
-         */
-        $container->set('common\interfaces\IPlaylist', 'common\models\data\Playlist');
-        $music = $container->get('common\models\Music');
-
-        /**
-         * @var $drink \common\models\Drink
-         */
-        $container->set('common\interfaces\IAssortment', 'common\models\data\Assortment');
-        $drink = $container->get('common\models\Drink');
-
-        $genres = array_fill_keys(array_keys($music->getAllGenres()), 0);
-
-        $guests = Guest::find()->all();
-        foreach ($guests as $rGuest) {
-            $guest = GuestFactory::makeGuest($rGuest, $music, $drink);
-
-            foreach($guest->getGenres() as $genre) {
-                $genres[$genre]++;
-            }
-
-            $this->stdout($guest->sayHello() . PHP_EOL);
-        }
-
-        arsort($genres);
-        $top = array_shift(array_keys($genres));
-
-        $this->stdout('Top genre now it is — ' . $top . '!' . PHP_EOL);
-
-        $rClub = Club::getSingle();
-        $club = ClubFactory::makeClub($rClub, $music, $drink);
-
-        if ($club->getPlayGenre() != $top) {
-            $this->stdout('Change old ' . $club->getPlayGenre());
-
-            $club->setPlayGenre($top);
-            $club->setPlayTime(strtotime('now'));
-
-            $this->stdout(' to best music ever!' . PHP_EOL);
-
-            $rClub->attributes = $club->toSave();
-            if (!$rClub->save()) {
-                throw new \RedisException('Error save club');
-            }
-        }
+        // create test user for access API
+        $user = new User();
+        $user->login = \Yii::$app->params['testLogin'];
+        $user->password = \Yii::$app->params['testPassword'];
+        $user->setPasswordHash(\Yii::$app->params['testPassword']);
+        $user->save();
     }
 
     public function actionProcess()
     {
         // TODO: generate new guests and change mood after each new music
+
     }
 }

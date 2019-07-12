@@ -90,8 +90,8 @@ abstract class AGuest
         return [
             'status' => $this->getMood(),
             'national' => static::NATIONAL_CODE,
-            'genres' => implode(',', array_keys($this->getGenres())),
-            'kinds' => implode(',', array_keys($this->getKinds()))
+            'genres' => implode(',', $this->getGenres()),
+            'kinds' => implode(',', $this->getKinds())
         ];
     }
 }

@@ -35,4 +35,9 @@ class Guest extends ActiveRecord
             [['kinds', 'genres'], 'string']
         ];
     }
+
+    public static function getAll()
+    {
+        return static::find()->all();
+    }
 }
