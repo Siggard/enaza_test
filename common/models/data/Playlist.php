@@ -2,9 +2,8 @@
 namespace common\models\data;
 
 use common\interfaces\IPlaylist;
-use common\models\guests\GermanGuest;
-use common\models\guests\RussianGuest;
-use yii\db\ActiveRecord;
+use common\models\guests\{GermanGuest, RussianGuest};
+use yii\redis\ActiveRecord;
 
 class Playlist extends ActiveRecord implements IPlaylist
 {
@@ -17,10 +16,11 @@ class Playlist extends ActiveRecord implements IPlaylist
             'HOUSE' => [GermanGuest::class]
         ];
 
-        // return $this->getAll();
+        // if need, can use to other DAO (mysql, sqlite e.t.c)
+        // return self::getAll();
     }
 
-    public function getAll()
+    public static function getAll()
     {
         return static::find()
             ->asArray()

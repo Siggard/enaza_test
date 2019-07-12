@@ -5,5 +5,5 @@ use common\models\Drink;
 
 interface IGuestBehavior
 {
-    public function setMood(Drink $drink, array $kinds, string $genre): void;
+    public function moodSetting(Drink $drink, array $kinds, string $genre): void;
 }

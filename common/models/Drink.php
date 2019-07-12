@@ -23,6 +23,6 @@ class Drink
 
     public function getAllKinds(): array
     {
-        return array_keys($this->_kinds);
+        return $this->_kinds;
     }
 }

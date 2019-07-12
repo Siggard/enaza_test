@@ -1,11 +1,9 @@
 <?php
 namespace common\models\guests;
 
-use common\interfaces\IGuestBehavior;
-use common\interfaces\IGuestCreate;
+use common\interfaces\{IGuestBehavior, IGuestCreate};
 use common\abstracts\AGuest;
-use common\models\Drink;
-use common\models\Music;
+use common\models\{Drink, Music};
 
 class GermanGuest extends AGuest implements IGuestCreate, IGuestBehavior
 {
@@ -18,17 +16,17 @@ class GermanGuest extends AGuest implements IGuestCreate, IGuestBehavior
 
     public function drinkSetting(Drink $drink): void
     {
-        array_push($this->drinks, $drink->getRandomKind());
+        array_push($this->kinds, $drink->getRandomKind());
     }
 
-    public function setMood(Drink $drink, array $kinds, string $genre): void
+    public function moodSetting(Drink $drink, array $kinds, string $genre): void
     {
-        if (in_array($genre, $this->getMusic())) {
-            $this->mood = self::STATUS_DANCE;
-        } elseif (count(array_intersect($this->getDrinks(), $kinds))) {
-            $this->mood = self::STATUS_DRUNK;
+        if (in_array($genre, $this->getGenres())) {
+            $this->setMood(self::STATUS_DANCE);
+        } elseif (count(array_intersect($this->getKinds(), $kinds))) {
+            $this->setMood(self::STATUS_DRUNK);
         } else {
-            $this->mood = self::STATUS_AWAY;
+            $this->setMood(self::STATUS_AWAY);
         }
     }
 

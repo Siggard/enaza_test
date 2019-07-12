@@ -3,18 +3,15 @@ namespace common\abstracts;
 
 use common\models\{Drink, Music};
 
-abstract class AGuest
+abstract class AClub
 {
-    const NATIONAL_CODE = 'UFO';
-
-    const STATUS_DANCE = 0;
-    const STATUS_DRUNK = 1;
-    const STATUS_AWAY = 2;
+    const SONG_TIME = 120;
 
     protected $genres = [], $kinds = [];
-    protected $mood, $id;
+    protected $playGenre, $playTime, $id;
 
-    abstract function sayHello(): string;
+    abstract function hideKind(): void;
+    abstract function playRandomMusic(): void;
 
     /**
      * @param string $genres
@@ -37,16 +34,19 @@ abstract class AGuest
     }
 
     /**
-     * @param int $mood
-     * @throws \yii\base\InvalidConfigException
+     * @param string $genre
      */
-    public function setMood(int $mood): void
+    public function setPlayGenre(string $genre): void
     {
-        if (in_array($mood, [self::STATUS_DANCE, self::STATUS_DRUNK, self::STATUS_AWAY])) {
-            $this->mood = $mood;
-        } else {
-            throw new \yii\base\InvalidConfigException('Wrong mood');
-        }
+        $this->playGenre = $genre;
+    }
+
+    /**
+     * @param int $time
+     */
+    public function setPlayTime(int $time): void
+    {
+        $this->playTime = $time;
     }
 
     /**
@@ -59,9 +59,24 @@ abstract class AGuest
 
 
 
-    public function getGenres(): array
+    public function getPlayGenre(): string
     {
-        return $this->genres;
+        return $this->playGenre;
+    }
+
+    public function getPlayTime(): int
+    {
+        return $this->playTime;
+    }
+
+    public function getLeftMusicTime(): int
+    {
+        $ago = self::SONG_TIME - (strtotime('now') - $this->playTime);
+        if ($ago < 0) {
+            $ago = 0;
+        }
+
+        return $ago;
     }
 
     public function getKinds(): array
@@ -69,18 +84,9 @@ abstract class AGuest
         return $this->kinds;
     }
 
-    public function getMood(): string
+    public function getGenres(): array
     {
-        return $this->mood;
-    }
-
-    public static function getStatusName(): array
-    {
-        return [
-            self::STATUS_DANCE => 'let\'s dance',
-            self::STATUS_DRUNK => 'go drunk',
-            self::STATUS_AWAY => 'i am tired'
-        ];
+        return $this->genres;
     }
 
 
@@ -88,8 +94,8 @@ abstract class AGuest
     public function toSave(): array
     {
         return [
-            'status' => $this->getMood(),
-            'national' => static::NATIONAL_CODE,
+            'play' => $this->getPlayGenre(),
+            'time' => $this->getPlayTime(),
             'genres' => implode(',', array_keys($this->getGenres())),
             'kinds' => implode(',', array_keys($this->getKinds()))
         ];
