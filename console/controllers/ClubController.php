@@ -86,9 +86,9 @@ class ClubController extends Controller
                 if (!$rGuest->save()) {
                     throw new \RedisException('Error save guest');
                 }
-
-                // TODO: del tired guests and generate new
             }
+
+            // TODO: del tired "X" guests and generate new "Y" guests
 
             $time = $club->getLeftMusicTime();
             if ($time == 0) {

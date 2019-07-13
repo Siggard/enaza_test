@@ -2,7 +2,7 @@ REQUIREMENTS
 -------------------
 
 ```
-1. Redis >= 2.8 (session DB)
+1. Redis >= 3.2 (session DB)
 2. PHP >= 7.1 (Yii2)
 ```
 
