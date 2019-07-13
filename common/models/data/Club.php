@@ -38,5 +38,12 @@ class Club extends ActiveRecord
     public function setPlayGenre($genre)
     {
         $this->playGenre = $genre;
+        return $this;
+    }
+
+    public function setPlayTime()
+    {
+        $this->playTime = strtotime('now');
+        return $this;
     }
 }

@@ -2,7 +2,7 @@
 namespace common\models\base;
 
 use common\models\{
-    Drink, interfaces\IClubCreate, Music
+    data\Club, Drink, interfaces\IClubCreate, Music
 };
 use yii\base\Model;
 
@@ -14,6 +14,7 @@ abstract class AClub extends Model implements IClubCreate
     protected $fullGenres = [], $fullKinds = [];
 
     abstract function playRandomMusic(): void;
+    abstract function checkNextMusic(Club $club): array;
 
     /**
      * @param Music $music

@@ -39,4 +39,13 @@ class Guest extends ActiveRecord
             ->indexBy('id')
             ->all();
     }
+
+    public static function quickSave($id, $newAttributes)
+    {
+        $guest = static::findOne($id);
+        $guest->attributes = $newAttributes;
+        if (!$guest->save()) {
+            throw new \RedisException('Error save guest');
+        }
+    }
 }

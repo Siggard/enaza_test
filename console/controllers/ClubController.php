@@ -71,37 +71,20 @@ class ClubController extends Controller
             $rClub = Club::getSingle();
             $club = ClubFactory::makeClub($rClub, $music, $drink);
 
-            $guests = Guest::getAll();
-
-            foreach ($guests as $rGuest) {
+            foreach (Guest::getAll() as $rGuest) {
                 /**
                  * @var $guest \common\models\interfaces\IGuestBehavior | \common\models\base\AGuest
                  */
                 $guest = GuestFactory::makeGuest($rGuest, $music, $drink);
                 $container->invoke([$guest, 'moodSetting'], ['kinds' => $club->getKinds(), 'genre' => $club->getPlayGenre()]);
 
-                $rGuest = Guest::findOne($guest->getId());
-                $rGuest->attributes = $guest->toSave();
-                $rGuest->save();
-                if (!$rGuest->save()) {
-                    throw new \RedisException('Error save guest');
-                }
+                Guest::quickSave($guest->getId(), $guest->toSave());
             }
 
             // TODO: del tired "X" guests and generate new "Y" guests
 
-            $time = $club->getLeftMusicTime();
-            if ($time == 0) {
-                $club->playRandomMusic();
-                $this->stdout('Next song! ' . $club->getPlayGenre() . PHP_EOL);
-
-                $rClub->attributes = $club->toSave();
-                if (!$rClub->save()) {
-                    throw new \RedisException('Error save club');
-                }
-            } else {
-                $this->stdout('Time to next ' . $time . PHP_EOL);
-            }
+            $result = $club->checkNextMusic($rClub);
+            $this->stdout($result['genre'] . ' time to next ' . $result['time'] . PHP_EOL);
 
             sleep(1);
         }
@@ -113,18 +96,17 @@ class ClubController extends Controller
      */
     public function actionPlay($genre)
     {
-        $playlist = new Playlist();
-        $genres = $playlist->create(true);
         $genre = mb_strtoupper($genre, 'UTF-8');
 
+        $genres = (new Playlist())->create(true);
         if (!in_array($genre, $genres)) {
             throw new ConfigurationException('This genre is not supported');
         }
 
-        $club = Club::getSingle();
-        $club->playGenre = $genre;
-        $club->playTime = strtotime('now');
-        if (!$club->save()) {
+        if (!(Club::getSingle())
+            ->setPlayGenre($genre)
+            ->setPlayTime()
+            ->save()) {
             throw new \Exception('Save error');
         }
 

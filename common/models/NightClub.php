@@ -6,7 +6,6 @@ use common\models\base\AGuest;
 use common\models\data\Club;
 use common\models\factories\GuestFactory;
 use common\models\interfaces\{IPlaylist, IAssortment};
-use yii\redis\ActiveRecord;
 
 class NightClub extends AClub
 {
@@ -109,6 +108,30 @@ class NightClub extends AClub
         $genres = array_keys($genres);
         $this->playGenre = $genres[array_rand($genres, 1)];
         $this->playTime = strtotime('now');
+    }
+
+    /**
+     * @param Club $club
+     * @return array
+     * @throws \RedisException
+     */
+    public function checkNextMusic(Club $club): array
+    {
+        $time = $this->getLeftMusicTime();
+
+        if ($time <= 0) {
+            $this->playRandomMusic();
+
+            $club->attributes = $this->toSave();
+            if (!$club->validate() || !$club->save()) {
+                throw new \RedisException('Error save club');
+            }
+        }
+
+        return [
+            'time' => $time,
+            'genre' => $this->playGenre
+        ];
     }
 
     /**

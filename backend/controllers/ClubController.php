@@ -82,10 +82,10 @@ class ClubController extends ActiveController
             throw new ConfigurationException('This genre is not supported');
         }
 
-        $club = Club::getSingle();
-        $club->playGenre = $genre;
-        $club->playTime = strtotime('now');
-        if (!$club->save()) {
+        if (!(Club::getSingle())
+            ->setPlayGenre($genre)
+            ->setPlayTime()
+            ->save()) {
             throw new \Exception('Save error');
         }
 
