@@ -1,8 +1,9 @@
 <?php
 namespace backend\controllers;
 
+use Codeception\Exception\ConfigurationException;
 use common\models\data\{
-    Club, Guest, User
+    Club, Guest, Playlist, User
 };
 use common\models\NightClub;
 use yii\rest\ActiveController;
@@ -18,7 +19,7 @@ class ClubController extends ActiveController
         $behaviors['authenticator'] = [
             'class' => HttpBasicAuth::class,
             'auth' => [$this, 'auth'],
-            'only' => ['optimize']
+            'only' => ['optimize', 'play']
         ];
         return $behaviors;
     }
@@ -65,5 +66,29 @@ class ClubController extends ActiveController
         }
 
         return null;
+    }
+
+    /**
+     * @return bool
+     * @throws ConfigurationException
+     */
+    public function actionPlay()
+    {
+        $genre = \Yii::$app->request->post()['genre'] ?? null;
+        $genre = mb_strtoupper($genre, 'UTF-8');
+
+        $genres = (new Playlist())->create(true);
+        if (!in_array($genre, $genres)) {
+            throw new ConfigurationException('This genre is not supported');
+        }
+
+        $club = Club::getSingle();
+        $club->playGenre = $genre;
+        $club->playTime = strtotime('now');
+        if (!$club->save()) {
+            throw new \Exception('Save error');
+        }
+
+        return true;
     }
 }

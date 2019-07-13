@@ -38,8 +38,10 @@ API
 
 ```
 GET /club               view details club info
+
 PUT /club/optimize      play most popular genre music among our guests
-                    - - this method require HTTP Base Auth, login/password (test/12344321)    
+PUT /club/play          play select genre, data in json {genre: HOUSE}
+                    - - this two PUT methods require HTTP Base Auth, login/password (test/12344321) 
     
 GET /guest              list of guests
 ```

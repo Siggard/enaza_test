@@ -1,8 +1,11 @@
 <?php
 namespace console\controllers;
 
+use Codeception\Exception\ConfigurationException;
 use common\models\factories\{ClubFactory, GuestFactory};
-use common\models\data\{Guest, Club, User};
+use common\models\data\{
+    Guest, Club, Playlist, User
+};
 use common\models\NightClub;
 use yii\console\Controller;
 
@@ -102,5 +105,29 @@ class ClubController extends Controller
 
             sleep(1);
         }
+    }
+
+    /**
+     * @param $genre
+     * @throws ConfigurationException
+     */
+    public function actionPlay($genre)
+    {
+        $playlist = new Playlist();
+        $genres = $playlist->create(true);
+        $genre = mb_strtoupper($genre, 'UTF-8');
+
+        if (!in_array($genre, $genres)) {
+            throw new ConfigurationException('This genre is not supported');
+        }
+
+        $club = Club::getSingle();
+        $club->playGenre = $genre;
+        $club->playTime = strtotime('now');
+        if (!$club->save()) {
+            throw new \Exception('Save error');
+        }
+
+        $this->stdout('Play successfully!');
     }
 }

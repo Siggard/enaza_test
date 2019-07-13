@@ -55,11 +55,12 @@ return [
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'club',
-                    'only' => ['options', 'view', 'index', 'optimize'],
+                    'only' => ['options', 'view', 'index', 'optimize', 'play'],
                     'except' => ['create', 'update', 'delete'],
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'PUT optimize' => 'optimize'
+                        'PUT optimize' => 'optimize',
+                        'PUT play' => 'play'
                     ]
                 ]
             ],

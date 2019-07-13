@@ -34,4 +34,9 @@ class Club extends ActiveRecord
     {
         return static::find()->one();
     }
+
+    public function setPlayGenre($genre)
+    {
+        $this->playGenre = $genre;
+    }
 }
