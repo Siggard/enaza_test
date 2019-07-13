@@ -7,8 +7,8 @@ return [
     'user.passwordResetTokenExpire' => 3600,
 
     'nationals' => [
-        \common\models\guests\RussianGuest::NATIONAL_CODE => \common\models\guests\RussianGuest::class,
-        \common\models\guests\GermanGuest::NATIONAL_CODE => \common\models\guests\GermanGuest::class
+        \common\models\RussianGuest::NATIONAL_CODE => \common\models\RussianGuest::class,
+        \common\models\GermanGuest::NATIONAL_CODE => \common\models\GermanGuest::class
     ],
     'testLogin' => 'test',
     'testPassword' => '12344321'

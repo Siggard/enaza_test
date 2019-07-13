@@ -4,13 +4,13 @@
 /* @var $model \common\models\data\Club */
 
 $this->title = 'Club info';
-$time = strtotime('now') - $model->time;
+$time = strtotime('now') - $model->playTime;
 ?>
 <table class="table table-hover table-bordered">
     <tbody>
         <tr class="success">
             <th>Play now</th>
-            <td><b><?= $model->play ?></b></td>
+            <td><b><?= $model->playGenre ?></b></td>
         </tr>
         <tr class="success">
             <th>Play time current music</th>

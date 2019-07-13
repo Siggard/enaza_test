@@ -1,5 +1,5 @@
 <?php
-namespace common\interfaces;
+namespace common\models\interfaces;
 
 use common\models\Drink;
 

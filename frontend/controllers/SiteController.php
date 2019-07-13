@@ -1,19 +1,17 @@
 <?php
 namespace frontend\controllers;
 
-use common\models\data\Club;
-use common\models\data\Guest;
+use common\models\data\{Club, Guest};
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 
 /**
- * Site controller
+ * Class SiteController, display club and guests status
+ *
+ * @package frontend\controllers
  */
 class SiteController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
     public function actions()
     {
         return [
@@ -23,11 +21,6 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return mixed
-     */
     public function actionIndex()
     {
         return $this->render('index', [

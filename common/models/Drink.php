@@ -1,7 +1,7 @@
 <?php
 namespace common\models;
 
-use common\interfaces\IAssortment;
+use common\models\interfaces\IAssortment;
 
 class Drink
 {

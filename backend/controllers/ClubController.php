@@ -2,13 +2,11 @@
 namespace backend\controllers;
 
 use common\models\data\{
-    Guest, Club, User
+    Club, Guest, User
 };
+use common\models\NightClub;
 use yii\rest\ActiveController;
 use yii\filters\auth\HttpBasicAuth;
-use common\factorys\{
-    ClubFactory, GuestFactory
-};
 
 class ClubController extends ActiveController
 {
@@ -25,54 +23,42 @@ class ClubController extends ActiveController
         return $behaviors;
     }
 
+    /**
+     * @return string
+     * @throws \RedisException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\di\NotInstantiableException
+     */
     public function actionOptimize()
     {
-        $container = new \yii\di\Container;
+        $club = Club::getSingle();
+        $clubModel = (new NightClub())->loadSingle($club);
 
-        /**
-         * @var $music \common\models\Music
-         */
-        $container->set('common\interfaces\IPlaylist', 'common\models\data\Playlist');
-        $music = $container->get('common\models\Music');
+        $top = $clubModel->topGenre(Guest::getAll());
 
-        /**
-         * @var $drink \common\models\Drink
-         */
-        $container->set('common\interfaces\IAssortment', 'common\models\data\Assortment');
-        $drink = $container->get('common\models\Drink');
+        if ($clubModel->getPlayGenre() != $top) {
+            $clubModel->setPlayMusic($top);
 
-        $genres = array_fill_keys(array_keys($music->getAllGenres()), 0);
-
-        $guests = Guest::getAll();
-        foreach ($guests as $rGuest) {
-            $guest = GuestFactory::makeGuest($rGuest, $music, $drink);
-            foreach(array_keys($guest->getGenres()) as $genre) {
-                $genres[$genre]++;
-            }
-        }
-
-        arsort($genres);
-        $top = array_shift(array_keys($genres));
-
-        $rClub = Club::getSingle();
-        $club = ClubFactory::makeClub($rClub, $music, $drink);
-
-        if ($club->getPlayGenre() != $top) {
-            $club->setPlayGenre($top);
-            $club->setPlayTime(strtotime('now'));
-
-            $rClub->attributes = $club->toSave();
-            if (!$rClub->save()) {
+            $club->attributes = $clubModel->toSave();
+            if (!$club->validate() || !$club->save()) {
                 throw new \RedisException('Error save club');
             }
         }
 
-        return $club->getPlayGenre();
+        return $clubModel->getPlayGenre();
     }
 
+    /**
+     * @param $login
+     * @param $password
+     * @return array|null|\yii\redis\ActiveRecord
+     */
     public function auth($login, $password)
     {
-        $user = User::find()->where(['login' => $login])->one();
+        /**
+         * @var $user \common\models\data\User
+         */
+        $user = User::findByLogin($login);
 
         if ($user->validatePassword($password)) {
             return $user;

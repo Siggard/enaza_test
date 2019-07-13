@@ -14,6 +14,7 @@ return [
     'modules' => [],
     'components' => [
         'request' => [
+            'cookieValidationKey' => 'APPdW5XB5W4HvAiE5_aB90oS2_EDDDdW',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]

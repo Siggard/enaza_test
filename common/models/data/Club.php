@@ -7,9 +7,9 @@ use yii\redis\ActiveRecord;
  * Class Club
  *
  * @property integer id
- * @property integer time
+ * @property integer playTime
  * @property string kinds
- * @property string play
+ * @property string playGenre
  * @property string genres
  *
  * @package common\models\data
@@ -18,18 +18,15 @@ class Club extends ActiveRecord
 {
     public function attributes()
     {
-        return ['id', 'play', 'genres', 'time', 'kinds'];
+        return ['id', 'playGenre', 'genres', 'playTime', 'kinds'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            [['kinds', 'play', 'genres', 'time'], 'required'],
-            [['kinds', 'play', 'genres'], 'string'],
-            ['time', 'integer']
+            [['kinds', 'playGenre', 'genres', 'playTime'], 'required'],
+            [['kinds', 'playGenre', 'genres'], 'string'],
+            ['playTime', 'integer']
         ];
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace common\models;
 
-use common\interfaces\IPlaylist;
+use common\models\interfaces\IPlaylist;
 
 class Music
 {

@@ -1,5 +1,7 @@
 <?php
-namespace common\interfaces;
+namespace common\models\interfaces;
+
+use common\models\data\Club;
 
 interface IClubCreate
 {
@@ -14,4 +16,16 @@ interface IClubCreate
      * @param IAssortment $drink
      */
     public function drinkSetting(IAssortment $assortment): void;
+
+    /**
+     * @param Club $club
+     * @return mixed
+     */
+    public function create(Club $club);
+
+    /**
+     * @param Club $oldClub
+     * @return mixed
+     */
+    public function loadSingle(Club $oldClub);
 }

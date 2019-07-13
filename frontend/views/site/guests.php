@@ -13,9 +13,9 @@ echo \yii\grid\GridView::widget([
         'id',
         'national',
         [
-            'attribute' => 'status',
+            'attribute' => 'mood',
             'content' => function($data) {
-                return \common\abstracts\AGuest::getStatusName()[$data->status];
+                return \common\models\base\AGuest::getStatusName()[$data->mood];
             }
         ],
         'genres',

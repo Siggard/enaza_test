@@ -36,23 +36,41 @@ class User extends ActiveRecord implements IdentityInterface
         return $this->getPrimaryKey();
     }
 
-    public function getAuthKey()
+    public function getAuthKey(): string
     {
         return $this->auth_key;
     }
 
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): bool
     {
         return $this->getAuthKey() === $authKey;
     }
 
-    public function validatePassword($password)
+    public function validatePassword($password): bool
     {
         return \Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
-    public function setPasswordHash($password)
+    public function setPasswordHash($password): void
     {
         $this->password_hash = \Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public static function findByLogin(string $login)
+    {
+        return static::find()
+            ->where(['login' => $login])
+            ->one();
+    }
+
+    /**
+     * Generate test user
+     */
+    public function testGenerate(): void
+    {
+        $this->login = \Yii::$app->params['testLogin'];
+        $this->password = \Yii::$app->params['testPassword'];
+        $this->setPasswordHash(\Yii::$app->params['testPassword']);
+        $this->save();
     }
 }

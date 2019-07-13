@@ -1,23 +1,26 @@
 <?php
 namespace common\models\data;
 
-use common\interfaces\IPlaylist;
-use common\models\guests\{GermanGuest, RussianGuest};
+use common\models\interfaces\IPlaylist;
+use common\models\{GermanGuest, RussianGuest};
 use yii\redis\ActiveRecord;
 
 class Playlist extends ActiveRecord implements IPlaylist
 {
-    public function create(): array
+    public function create($isKeys = false): array
     {
-        return [
+        // if need, can use to other DAO (mysql, sqlite e.t.c)
+        // $data = self::getAll();
+
+        $data = [
             'ROCK' => [RussianGuest::class],
             'POP' => [],
             'RAP' => [],
             'HOUSE' => [GermanGuest::class]
         ];
 
-        // if need, can use to other DAO (mysql, sqlite e.t.c)
-        // return self::getAll();
+        // TODO: add cache
+        return $isKeys ? array_keys($data) : $data;
     }
 
     public static function getAll()

@@ -8,8 +8,8 @@ return [
         'urlManager' => [
             'showScriptName' => true,
         ],
-        'request' => [
-            'cookieValidationKey' => 'test',
-        ],
+//        'request' => [
+//            'cookieValidationKey' => 'test',
+//        ],
     ],
 ];

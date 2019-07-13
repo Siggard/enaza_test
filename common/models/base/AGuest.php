@@ -1,9 +1,12 @@
 <?php
-namespace common\abstracts;
+namespace common\models\base;
 
-use common\models\{Drink, Music};
+use common\models\{
+    Drink, interfaces\IGuestCreate, Music
+};
+use yii\base\Model;
 
-abstract class AGuest
+abstract class AGuest extends Model implements IGuestCreate
 {
     const NATIONAL_CODE = 'UFO';
 
@@ -11,29 +14,27 @@ abstract class AGuest
     const STATUS_DRUNK = 1;
     const STATUS_AWAY = 2;
 
-    protected $genres = [], $kinds = [];
-    protected $mood, $id;
+    protected $mood, $kinds, $genres, $national, $id;
+    protected $fullGenres = [], $fullKinds = [];
 
     abstract function sayHello(): string;
 
     /**
-     * @param string $genres
      * @param Music $music
      */
-    public function setGenres(string $genres, Music $music): void
+    public function setFullGenres(Music $music): void
     {
-        $tmpGenres = explode(',', $genres);
-        $this->genres = array_intersect_key($music->getAllGenres(), array_fill_keys(array_map('trim', $tmpGenres), ''));
+        $tmpGenres = explode(',', $this->genres);
+        $this->fullGenres = array_intersect_key($music->getAllGenres(), array_fill_keys(array_map('trim', $tmpGenres), ''));
     }
 
     /**
-     * @param string $kinds
      * @param Drink $drink
      */
-    public function setKinds(string $kinds, Drink $drink): void
+    public function setFullKinds(Drink $drink): void
     {
-        $tmpKinds = explode(',', $kinds);
-        $this->kinds = array_intersect_key($drink->getAllKinds(), array_fill_keys(array_map('trim', $tmpKinds), ''));
+        $tmpKinds = explode(',', $this->kinds);
+        $this->fullKinds = array_intersect_key($drink->getAllKinds(), array_fill_keys(array_map('trim', $tmpKinds), ''));
     }
 
     /**
@@ -50,6 +51,22 @@ abstract class AGuest
     }
 
     /**
+     * @param $genres
+     */
+    public function setGenres($genres)
+    {
+        $this->genres = $genres;
+    }
+
+    /**
+     * @param $kinds
+     */
+    public function setKinds($kinds)
+    {
+        $this->kinds = $kinds;
+    }
+
+    /**
      * @param int $id
      */
     public function setId(int $id): void
@@ -61,12 +78,12 @@ abstract class AGuest
 
     public function getGenres(): array
     {
-        return $this->genres;
+        return $this->fullGenres;
     }
 
     public function getKinds(): array
     {
-        return $this->kinds;
+        return $this->fullKinds;
     }
 
     public function getMood(): string
@@ -93,7 +110,7 @@ abstract class AGuest
     public function toSave(): array
     {
         return [
-            'status' => $this->getMood(),
+            'mood' => $this->getMood(),
             'national' => static::NATIONAL_CODE,
             'genres' => implode(',', array_keys($this->getGenres())),
             'kinds' => implode(',', array_keys($this->getKinds()))
